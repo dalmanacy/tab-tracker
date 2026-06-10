@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MoveOn — Connection Setup</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #f0f4f8;
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      color: #1a202c;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+      padding: 2.5rem 2rem;
+      width: 100%;
+      max-width: 440px;
+    }
+
+    .logo {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .logo h1 {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: #2563eb;
+      letter-spacing: -0.5px;
+    }
+
+    .logo p {
+      font-size: 0.875rem;
+      color: #64748b;
+      margin-top: 0.25rem;
+    }
+
+    .field {
+      margin-bottom: 1.25rem;
+    }
+
+    label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #475569;
+      margin-bottom: 0.4rem;
+    }
+
+    .url-row {
+      display: flex;
+      align-items: center;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 8px;
+      overflow: hidden;
+      transition: border-color 0.15s;
+    }
+
+    .url-row:focus-within {
+      border-color: #2563eb;
+      box-shadow: 0 0 0 3px rgba(37,99,235,0.12);
+    }
+
+    .url-prefix, .url-suffix {
+      padding: 0.6rem 0.75rem;
+      background: #f8fafc;
+      color: #64748b;
+      font-size: 0.875rem;
+      white-space: nowrap;
+      border: none;
+      outline: none;
+    }
+
+    .url-prefix { border-right: 1.5px solid #cbd5e1; }
+    .url-suffix { border-left: 1.5px solid #cbd5e1; }
+
+    .url-row input {
+      flex: 1;
+      border: none;
+      outline: none;
+      padding: 0.6rem 0.5rem;
+      font-size: 0.95rem;
+      min-width: 0;
+      background: #fff;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="password"] {
+      width: 100%;
+      padding: 0.65rem 0.875rem;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      transition: border-color 0.15s, box-shadow 0.15s;
+      outline: none;
+    }
+
+    input[type="text"]:focus,
+    input[type="email"]:focus,
+    input[type="password"]:focus {
+      border-color: #2563eb;
+      box-shadow: 0 0 0 3px rgba(37,99,235,0.12);
+    }
+
+    .btn {
+      width: 100%;
+      padding: 0.75rem;
+      background: #2563eb;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 0.5rem;
+      transition: background 0.15s, transform 0.1s;
+    }
+
+    .btn:hover { background: #1d4ed8; }
+    .btn:active { transform: scale(0.98); }
+
+    .alert {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      font-size: 0.875rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .alert-error {
+      background: #fef2f2;
+      color: #b91c1c;
+      border: 1px solid #fecaca;
+    }
+
+    .alert-success {
+      background: #f0fdf4;
+      color: #15803d;
+      border: 1px solid #bbf7d0;
+    }
+
+    .alert-icon { font-size: 1.1rem; flex-shrink: 0; }
+
+    .url-preview {
+      font-size: 0.78rem;
+      color: #94a3b8;
+      margin-top: 0.35rem;
+      font-family: monospace;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="logo">
+      <h1>MoveOn</h1>
+      <p>Connect to your instance</p>
+    </div>
+
+    {% if error %}
+    <div class="alert alert-error">
+      <span class="alert-icon">✕</span>
+      {{ error }}
+    </div>
+    {% endif %}
+
+    {% if status == "connected" %}
+    <div class="alert alert-success">
+      <span class="alert-icon">✓</span>
+      Connected successfully. Configuration saved.
+    </div>
+    {% endif %}
+
+    <form method="POST" action="/connect" id="form">
+      <div class="field">
+        <label>Instance</label>
+        <div class="url-row">
+          <span class="url-prefix">https://</span>
+          <input
+            type="text"
+            name="instance"
+            id="instance"
+            placeholder="myinstance"
+            value="{{ config.instance or '' }}"
+            autocomplete="off"
+            required
+          />
+          <span class="url-suffix">.restapi.moveonfr.com</span>
+        </div>
+        <div class="url-preview" id="url-preview">
+          https://{{ config.instance or 'myinstance' }}.restapi.moveonfr.com/api/v1/
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Username</label>
+        <input
+          type="email"
+          name="username"
+          placeholder="user@example.com"
+          value="{{ config.username or '' }}"
+          required
+        />
+      </div>
+
+      <div class="field">
+        <label>Password</label>
+        <input
+          type="password"
+          name="password"
+          placeholder="••••••••"
+          required
+        />
+      </div>
+
+      <button type="submit" class="btn">Test &amp; Save Connection</button>
+    </form>
+  </div>
+
+  <script>
+    const input = document.getElementById('instance');
+    const preview = document.getElementById('url-preview');
+    input.addEventListener('input', () => {
+      const val = input.value.trim() || 'myinstance';
+      preview.textContent = `https://${val}.restapi.moveonfr.com/api/v1/`;
+    });
+  </script>
+</body>
+</html>
