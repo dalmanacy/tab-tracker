@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Dashboard — MoveOn</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: #f0f4f8;
+      color: #1a202c;
+      min-height: 100vh;
+      padding: 2.5rem clamp(1rem, 5vw, 3rem);
+    }
+
+    .header {
+      max-width: 900px;
+      margin-bottom: 2.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .header-left h1 {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: #0f172a;
+    }
+
+    .header-left p {
+      color: #64748b;
+      font-size: 0.9rem;
+      margin-top: 0.25rem;
+    }
+
+    .badge-connected {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: #dcfce7;
+      color: #15803d;
+      border: 1px solid #bbf7d0;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding: 0.3rem 0.8rem;
+      white-space: nowrap;
+    }
+
+    .section-title {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #94a3b8;
+      margin-bottom: 1rem;
+      max-width: 900px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 1.25rem;
+      max-width: 900px;
+    }
+
+    .action-card {
+      background: #fff;
+      border-radius: 14px;
+      border: 1px solid #e2e8f0;
+      padding: 1.5rem;
+      text-decoration: none;
+      color: inherit;
+      transition: box-shadow 0.15s, transform 0.15s, border-color 0.15s;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+
+    .action-card:hover {
+      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+      transform: translateY(-2px);
+      border-color: #2563eb;
+    }
+
+    .action-icon {
+      font-size: 1.75rem;
+      line-height: 1;
+    }
+
+    .action-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #0f172a;
+    }
+
+    .action-desc {
+      font-size: 0.83rem;
+      color: #64748b;
+      line-height: 1.55;
+    }
+
+    .action-arrow {
+      margin-top: auto;
+      font-size: 0.8rem;
+      color: #2563eb;
+      font-weight: 600;
+    }
+
+    .reconfigure {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-size: 0.8rem;
+      color: #64748b;
+      text-decoration: none;
+      margin-top: 2.5rem;
+      max-width: 900px;
+    }
+
+    .reconfigure:hover { color: #2563eb; text-decoration: underline; }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <div class="header-left">
+      <h1>MoveOn Dashboard</h1>
+      <p>Choose an action to get started.</p>
+    </div>
+    <span class="badge-connected">● Connected</span>
+  </div>
+
+  <p class="section-title">Imports</p>
+
+  <div class="grid">
+    <a href="/import/catalogue-courses" class="action-card">
+      <div class="action-icon">📚</div>
+      <div class="action-title">Import Course Catalogue</div>
+      <div class="action-desc">
+        Bulk-create course catalogue entries from a CSV file. Resolves institutions,
+        academic periods, languages, and degree programs automatically.
+      </div>
+      <div class="action-arrow">Go →</div>
+    </a>
+  </div>
+
+  <a href="/" class="reconfigure">⚙ Reconfigure connection</a>
+
+</body>
+</html>

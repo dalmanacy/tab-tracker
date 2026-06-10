@@ -258,13 +258,13 @@
 <body>
 
   <div class="page-header">
-    <a href="/" class="back">← Back to connection</a>
+    <a href="/dashboard" class="back">← Back to dashboard</a>
     <h1>Import Course Catalogue</h1>
     <p class="subtitle">
       Upload a CSV file to bulk-create entries in the MoveOn course catalogue.
       Download the template, fill it in, then upload it below.
-      Institution names are resolved automatically from your MoveOn instance.
-      Academic periods are resolved from your MoveOn periods export.
+      Institution names, academic periods, languages, and degree programs are
+      resolved automatically — no extra files needed.
     </p>
   </div>
 
@@ -297,7 +297,9 @@
       <p>Open the template in Excel or any spreadsheet editor. Delete the hint row (row 2 starting with <code>#</code>) before uploading. Keep the header row.</p>
       <p>
         For <strong>institution_name</strong>, use the exact name as it appears in MoveOn.<br>
-        For <strong>academic_period_name</strong>, use the exact name from your periods export.
+        For <strong>academic_period_name</strong>, use the full name or short name (e.g. <code>1er semestre 2025/26</code> or <code>S12025/26</code>).<br>
+        For <strong>language</strong>, use English/French/German/Spanish (or EN/FR/DE/ES or Anglais/Français/Allemand/Espagnol).<br>
+        For <strong>degree_program_name</strong>, enter the program name — it will be looked up live in MoveOn.
       </p>
     </div>
 
@@ -315,23 +317,6 @@
             <span class="file-label">Click or drag your filled CSV here</span>
             <div class="file-name" id="data-name"></div>
           </div>
-        </div>
-
-        <div class="field">
-          <label>
-            Academic periods lookup file
-            <span class="optional-tag">optional</span>
-          </label>
-          <div class="file-wrap" id="periods-wrap">
-            <input type="file" name="periods_csv" accept=".csv,.txt" id="periods-input">
-            <span class="file-icon">📅</span>
-            <span class="file-label">Upload your MoveOn academic periods export</span>
-            <div class="file-name" id="periods-name"></div>
-          </div>
-          <p class="hint">
-            Export from MoveOn → Academic Periods → Export CSV. Without this file, the
-            <code>academic_period_name</code> column will be skipped.
-          </p>
         </div>
 
         <button type="submit" class="btn btn-submit">▶ Run Import</button>
@@ -406,14 +391,9 @@
   {% endif %}
 
   <script>
-    function bindFileInput(inputId, nameId) {
-      document.getElementById(inputId).addEventListener('change', function() {
-        const label = document.getElementById(nameId);
-        label.textContent = this.files[0] ? this.files[0].name : '';
-      });
-    }
-    bindFileInput('data-input', 'data-name');
-    bindFileInput('periods-input', 'periods-name');
+    document.getElementById('data-input').addEventListener('change', function() {
+      document.getElementById('data-name').textContent = this.files[0] ? this.files[0].name : '';
+    });
   </script>
 
 </body>

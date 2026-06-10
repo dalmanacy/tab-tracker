@@ -1,7 +1,7 @@
 import json
 import os
 
-from flask import Flask, render_template, request
+from flask import Flask, redirect, render_template, request, url_for
 
 from moveon import MoveOn, MoveOnAPIError, MoveOnAuthError
 from routes.imports import imports_bp
@@ -28,6 +28,11 @@ def build_base_url(instance: str) -> str:
     return f"https://{instance}.restapi.moveonfr.com/api/v1/"
 
 
+@app.route("/dashboard")
+def dashboard():
+    return render_template("dashboard.html")
+
+
 @app.route("/", methods=["GET"])
 def index():
     cfg = load_config()
@@ -50,8 +55,7 @@ def connect():
         # Trigger a lightweight call to validate credentials
         client.academic_years.list(limit=1)
         save_config(instance, username, password)
-        cfg = {"instance": instance, "username": username, "password": ""}
-        return render_template("config.html", config=cfg, status="connected", error=None)
+        return redirect(url_for("dashboard"))
     except MoveOnAuthError:
         cfg = {"instance": instance, "username": username, "password": ""}
         return render_template("config.html", config=cfg, status=None, error="Invalid username or password.")
