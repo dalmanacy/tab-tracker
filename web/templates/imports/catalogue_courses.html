@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Import Course Catalogue — MoveOn</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: #f0f4f8;
+      color: #1a202c;
+      min-height: 100vh;
+      padding: 2rem clamp(1rem, 5vw, 3rem);
+    }
+
+    .page-header {
+      margin-bottom: 2rem;
+    }
+
+    .back {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.875rem;
+      color: #2563eb;
+      text-decoration: none;
+      margin-bottom: 1rem;
+    }
+
+    .back:hover { text-decoration: underline; }
+
+    h1 {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: #0f172a;
+    }
+
+    .subtitle {
+      margin-top: 0.5rem;
+      color: #475569;
+      font-size: 0.95rem;
+      max-width: 680px;
+      line-height: 1.6;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      max-width: 1000px;
+    }
+
+    @media (max-width: 700px) {
+      .layout { grid-template-columns: 1fr; }
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 12px;
+      border: 1px solid #e2e8f0;
+      padding: 1.5rem;
+    }
+
+    .card h2 {
+      font-size: 1rem;
+      font-weight: 600;
+      color: #0f172a;
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .step-num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 1.5rem;
+      height: 1.5rem;
+      border-radius: 50%;
+      background: #2563eb;
+      color: #fff;
+      font-size: 0.75rem;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .card p {
+      font-size: 0.875rem;
+      color: #475569;
+      line-height: 1.6;
+      margin-bottom: 1rem;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.55rem 1rem;
+      border-radius: 8px;
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.15s;
+      border: none;
+    }
+
+    .btn-primary { background: #2563eb; color: #fff; }
+    .btn-primary:hover { background: #1d4ed8; }
+
+    .btn-outline {
+      background: #fff;
+      color: #2563eb;
+      border: 1.5px solid #2563eb;
+    }
+    .btn-outline:hover { background: #eff6ff; }
+
+    .btn-submit {
+      background: #16a34a;
+      color: #fff;
+      width: 100%;
+      justify-content: center;
+      padding: 0.75rem;
+      font-size: 1rem;
+      margin-top: 1rem;
+    }
+    .btn-submit:hover { background: #15803d; }
+
+    .field {
+      margin-bottom: 1rem;
+    }
+
+    label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #475569;
+      margin-bottom: 0.35rem;
+    }
+
+    .file-wrap {
+      position: relative;
+      border: 2px dashed #cbd5e1;
+      border-radius: 8px;
+      padding: 1rem;
+      text-align: center;
+      transition: border-color 0.15s, background 0.15s;
+      cursor: pointer;
+    }
+
+    .file-wrap:hover, .file-wrap.drag { border-color: #2563eb; background: #eff6ff; }
+
+    .file-wrap input[type="file"] {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+      width: 100%;
+      height: 100%;
+    }
+
+    .file-wrap .file-icon { font-size: 1.5rem; display: block; margin-bottom: 0.25rem; }
+    .file-wrap .file-label { font-size: 0.875rem; color: #475569; }
+    .file-wrap .file-name { font-size: 0.8rem; color: #2563eb; margin-top: 0.25rem; font-weight: 600; }
+
+    .optional-tag {
+      font-size: 0.7rem;
+      background: #f1f5f9;
+      color: #64748b;
+      padding: 0.1rem 0.4rem;
+      border-radius: 4px;
+      font-weight: 500;
+      text-transform: none;
+      letter-spacing: 0;
+      margin-left: 0.3rem;
+    }
+
+    .hint {
+      font-size: 0.78rem;
+      color: #94a3b8;
+      margin-top: 0.35rem;
+    }
+
+    /* Alert */
+    .alert {
+      display: flex;
+      gap: 0.75rem;
+      padding: 1rem;
+      border-radius: 8px;
+      font-size: 0.875rem;
+      margin-bottom: 1.5rem;
+      max-width: 1000px;
+    }
+    .alert-error { background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; }
+
+    /* Results */
+    .results {
+      max-width: 1000px;
+      margin-top: 1.5rem;
+    }
+
+    .results h2 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+    }
+
+    .summary {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .summary-chip {
+      padding: 0.4rem 0.9rem;
+      border-radius: 20px;
+      font-size: 0.875rem;
+      font-weight: 600;
+    }
+
+    .chip-ok { background: #dcfce7; color: #15803d; }
+    .chip-error { background: #fee2e2; color: #b91c1c; }
+    .chip-warn { background: #fef9c3; color: #854d0e; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.875rem;
+      background: #fff;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid #e2e8f0;
+    }
+
+    thead { background: #f8fafc; }
+
+    th, td {
+      padding: 0.65rem 1rem;
+      text-align: left;
+      border-bottom: 1px solid #f1f5f9;
+    }
+
+    th { font-weight: 600; color: #475569; font-size: 0.8rem; text-transform: uppercase; }
+
+    .status-ok { color: #16a34a; font-weight: 600; }
+    .status-error { color: #dc2626; font-weight: 600; }
+
+    .warn-list { color: #b45309; font-size: 0.8rem; margin-top: 0.2rem; }
+
+    .full-width { grid-column: 1 / -1; }
+  </style>
+</head>
+<body>
+
+  <div class="page-header">
+    <a href="/" class="back">← Back to connection</a>
+    <h1>Import Course Catalogue</h1>
+    <p class="subtitle">
+      Upload a CSV file to bulk-create entries in the MoveOn course catalogue.
+      Download the template, fill it in, then upload it below.
+      Institution names are resolved automatically from your MoveOn instance.
+      Academic periods are resolved from your MoveOn periods export.
+    </p>
+  </div>
+
+  {% if error %}
+  <div class="alert alert-error">
+    <span>✕</span>
+    <span>{{ error }}</span>
+  </div>
+  {% endif %}
+
+  {% if results is not defined %}
+
+  <div class="layout">
+
+    <!-- Step 1: Template -->
+    <div class="card">
+      <h2><span class="step-num">1</span> Download the template</h2>
+      <p>
+        The template contains all available fields with a hint row and an example row.
+        Fill it in with your course data — leave any optional field blank if not needed.
+      </p>
+      <a href="/import/catalogue-courses/template" class="btn btn-outline" download>
+        ↓ Download CSV Template
+      </a>
+    </div>
+
+    <!-- Step 2: Fill in -->
+    <div class="card">
+      <h2><span class="step-num">2</span> Fill in your data</h2>
+      <p>Open the template in Excel or any spreadsheet editor. Delete the hint row (row 2 starting with <code>#</code>) before uploading. Keep the header row.</p>
+      <p>
+        For <strong>institution_name</strong>, use the exact name as it appears in MoveOn.<br>
+        For <strong>academic_period_name</strong>, use the exact name from your periods export.
+      </p>
+    </div>
+
+    <!-- Step 3: Upload form -->
+    <div class="card full-width">
+      <h2><span class="step-num">3</span> Upload &amp; import</h2>
+
+      <form method="POST" action="/import/catalogue-courses/run" enctype="multipart/form-data">
+
+        <div class="field">
+          <label>Course data file <span style="color:#dc2626">*</span></label>
+          <div class="file-wrap" id="data-wrap">
+            <input type="file" name="data_csv" accept=".csv" id="data-input" required>
+            <span class="file-icon">📄</span>
+            <span class="file-label">Click or drag your filled CSV here</span>
+            <div class="file-name" id="data-name"></div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>
+            Academic periods lookup file
+            <span class="optional-tag">optional</span>
+          </label>
+          <div class="file-wrap" id="periods-wrap">
+            <input type="file" name="periods_csv" accept=".csv,.txt" id="periods-input">
+            <span class="file-icon">📅</span>
+            <span class="file-label">Upload your MoveOn academic periods export</span>
+            <div class="file-name" id="periods-name"></div>
+          </div>
+          <p class="hint">
+            Export from MoveOn → Academic Periods → Export CSV. Without this file, the
+            <code>academic_period_name</code> column will be skipped.
+          </p>
+        </div>
+
+        <button type="submit" class="btn btn-submit">▶ Run Import</button>
+      </form>
+    </div>
+
+  </div>
+
+  {% else %}
+
+  <!-- Results -->
+  <div class="results">
+    <h2>Import Results</h2>
+
+    {% set ok_count = results | selectattr('status', 'eq', 'ok') | list | length %}
+    {% set err_count = results | selectattr('status', 'eq', 'error') | list | length %}
+    {% set warn_count = results | selectattr('warnings') | list | length %}
+
+    <div class="summary">
+      <span class="summary-chip chip-ok">✓ {{ ok_count }} created</span>
+      {% if err_count > 0 %}
+      <span class="summary-chip chip-error">✕ {{ err_count }} failed</span>
+      {% endif %}
+      {% if warn_count > 0 %}
+      <span class="summary-chip chip-warn">⚠ {{ warn_count }} with warnings</span>
+      {% endif %}
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Row</th>
+          <th>Course name</th>
+          <th>Status</th>
+          <th>MoveOn ID</th>
+          <th>Notes</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for r in results %}
+        <tr>
+          <td>{{ r.row }}</td>
+          <td>{{ r.name }}</td>
+          <td>
+            {% if r.status == 'ok' %}
+              <span class="status-ok">✓ Created</span>
+            {% else %}
+              <span class="status-error">✕ Failed</span>
+            {% endif %}
+          </td>
+          <td>{{ r.id or '—' }}</td>
+          <td>
+            {% if r.status == 'error' %}
+              <span style="color:#dc2626">{{ r.message }}</span>
+            {% endif %}
+            {% if r.warnings %}
+              <div class="warn-list">
+                {% for w in r.warnings %}⚠ {{ w }}<br>{% endfor %}
+              </div>
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <div style="margin-top:1.5rem">
+      <a href="/import/catalogue-courses" class="btn btn-outline">← Import another file</a>
+    </div>
+  </div>
+
+  {% endif %}
+
+  <script>
+    function bindFileInput(inputId, nameId) {
+      document.getElementById(inputId).addEventListener('change', function() {
+        const label = document.getElementById(nameId);
+        label.textContent = this.files[0] ? this.files[0].name : '';
+      });
+    }
+    bindFileInput('data-input', 'data-name');
+    bindFileInput('periods-input', 'periods-name');
+  </script>
+
+</body>
+</html>

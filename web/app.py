@@ -1,11 +1,13 @@
 import json
 import os
 
-from flask import Flask, redirect, render_template, request, url_for
+from flask import Flask, render_template, request
 
 from moveon import MoveOn, MoveOnAPIError, MoveOnAuthError
+from routes.imports import imports_bp
 
 app = Flask(__name__)
+app.register_blueprint(imports_bp)
 
 CONFIG_FILE = os.path.join(os.path.dirname(__file__), ".moveon_config.json")
 
